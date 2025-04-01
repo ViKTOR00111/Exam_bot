@@ -4,7 +4,6 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 
 def get_years_keyboard():
     task_images_path = Path(__file__).parents[1].joinpath("task_images")
-    print(f"Path to task_images: {task_images_path}")  # Отладочный вывод
     directory_names = [directory.name for directory in task_images_path.iterdir() if directory.is_dir()]
     years = [year[:4] for year in directory_names]
     unique_years = list(set(years))
