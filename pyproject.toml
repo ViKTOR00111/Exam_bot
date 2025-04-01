@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "exam-bot"
+version = "0.1.0"
+description = ""
+authors = ["Viktor Klimov <vitya.klimov.2000@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiogram = "^3.16.0"
+pydantic-settings = "^2.7.1"
+pdfplumber = "^0.11.5"
+pytesseract = "^0.3.13"
+lxml = "^5.3.0"
+numpy = "^2.2.2"
+opencv-python = "^4.11.0.86"
+pandas = "^2.2.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
