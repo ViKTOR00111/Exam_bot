@@ -1,10 +1,17 @@
 from pathlib import Path
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+from utils.book_mapings import find_title_book
+from settings import config
+
+
+def get_task_folders(path: str):
+    task_path = Path(__file__).parents[1].joinpath(path)
+    directory_names = [directory.name for directory in task_path.iterdir() if directory.is_dir()]
+    return directory_names
 
 
 def get_years_keyboard():
-    task_images_path = Path(__file__).parents[1].joinpath("task_images")
-    directory_names = [directory.name for directory in task_images_path.iterdir() if directory.is_dir()]
+    directory_names = get_task_folders(config.TASKS_FOLDER)
     years = [year[:4] for year in directory_names]
     unique_years = list(set(years))
 
@@ -18,9 +25,13 @@ def get_years_keyboard():
     )
 
 
-def get_books_keyboard():
-    books = ["10 вариантов: \nО.А. Котова, Т.Е. Лискова", "30 вариантов: \nО.А. Котова, Т.Е. Лискова"]
-    buttons = [[KeyboardButton(text=book)] for book in books]
+def get_books_keyboard(year: int):
+    directory_names = get_task_folders(config.TASKS_FOLDER)
+    books = [name[5:] for name in directory_names if int(name[:4]) == year]
+    unique_books = list(set(books))
+
+    title_books = find_title_book(unique_books)
+    buttons = [[KeyboardButton(text=book)] for book in title_books]
     return ReplyKeyboardMarkup(
         keyboard=buttons,
         resize_keyboard=True
@@ -43,6 +54,3 @@ def get_final_keyboard():
         [InlineKeyboardButton(text="📝 Решать задачи", callback_data="solve_tasks")],
         [InlineKeyboardButton(text="❌ Сбросить всё", callback_data="reset_all")]
     ])
-
-
-get_years_keyboard()

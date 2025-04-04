@@ -13,7 +13,7 @@ from keyboards.builders import (
 from states.form import Form
 from settings import Messages
 from pathlib import Path
-from utils.book_mapings import find_book
+from utils.book_mapings import find_nickname_book
 from loguru import logger
 
 router = Router()
@@ -38,7 +38,7 @@ async def choose_year_handler(message: Message, state: FSMContext) -> None:
         await state.update_data(selected_year=message.text)
         await message.answer(
             f"Выбран год: {message.text}\nТеперь выберите задачник:",
-            reply_markup=get_books_keyboard()
+            reply_markup=get_books_keyboard(year=int(message.text))
         )
         logger.trace(f"The user chose the year {message.text}")
         await state.set_state(Form.choosing_book)
@@ -74,8 +74,8 @@ async def choose_variant_handler(message: Message, state: FSMContext) -> None:
             logger.trace(f"The user chose the variant {variant}")
 
             year = data["selected_year"]
-            author = find_book(data["selected_book"])
-            answers = load_answer(year, author)
+            book = find_nickname_book(data["selected_book"])
+            answers = load_answer(year, book)
             await state.update_data(answers=answers)
 
             user_data = {
@@ -112,7 +112,7 @@ async def send_task(message: Message, state: FSMContext):
     data = await state.get_data()
     current_task = data["test_data"]["current_task"]
     selected_variant = data["selected_variant"]
-    book_name = find_book(data["selected_book"])
+    book_name = find_nickname_book(data["selected_book"])
     year = data["selected_year"]
 
     task_image_path = Path(__file__).parents[1].joinpath("task_images", f"{year}_{book_name}",
